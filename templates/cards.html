@@ -1,0 +1,100 @@
+
+{% extends "base.html" %}
+
+{% block title %}My Cards | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h2>My Cards</h2>
+        <p>Manage your NOVABANK demo debit card.</p>
+    </div>
+
+    <div class="card-management-container">
+
+        <div class="virtual-card {% if card.status == 'BLOCKED' %}blocked-card{% endif %}">
+
+            <div class="virtual-card-top">
+                <h3>NOVABANK</h3>
+                <span>VIRTUAL DEBIT</span>
+            </div>
+
+            <div class="card-chip">▦</div>
+
+            <div class="card-number">
+                {{ card.card_number }}
+            </div>
+
+            <div class="virtual-card-bottom">
+
+                <div>
+                    <small>CARD HOLDER</small>
+                    <h4>{{ card.card_holder }}</h4>
+                </div>
+
+                <div>
+                    <small>VALID THRU</small>
+                    <h4>{{ card.expiry_date }}</h4>
+                </div>
+
+            </div>
+
+            {% if card.status == 'BLOCKED' %}
+                <div class="card-blocked-overlay">CARD BLOCKED</div>
+            {% endif %}
+
+        </div>
+
+        <div class="card-details-panel">
+
+            <h3>Card Details</h3>
+
+            <div class="card-detail-row">
+                <span>Card Type</span>
+                <strong>{{ card.card_type }}</strong>
+            </div>
+
+            <div class="card-detail-row">
+                <span>Card Number</span>
+                <strong>{{ card.card_number }}</strong>
+            </div>
+
+            <div class="card-detail-row">
+                <span>Card Status</span>
+
+                {% if card.status == 'ACTIVE' %}
+                    <strong class="active-status">ACTIVE</strong>
+                {% else %}
+                    <strong class="blocked-status">BLOCKED</strong>
+                {% endif %}
+            </div>
+
+            <form method="POST" action="{{ url_for('cards.toggle_status') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                {% if card.status == 'ACTIVE' %}
+                    <button type="submit" class="block-card-button">
+                        Block Demo Card
+                    </button>
+                {% else %}
+                    <button type="submit" class="activate-card-button">
+                        Activate Demo Card
+                    </button>
+                {% endif %}
+
+            </form>
+
+            <p class="card-warning">
+                This is a fictional NOVABANK virtual card for demonstration only.
+                It cannot be used for real payments or purchases.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

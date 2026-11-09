@@ -1,0 +1,153 @@
+
+{% extends "base.html" %}
+
+{% block title %}Loan Details | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div class="page-header">
+        <a href="{{ url_for('loans.overview') }}" class="loan-back-link">
+            ← Back to Existing Loans
+        </a>
+
+        <h2>{{ loan.loan_name }}</h2>
+        <p>View your simulated loan information and repayment history.</p>
+    </div>
+
+    <div class="transaction-summary">
+
+        <div class="summary-card">
+            <span>Original Loan Amount</span>
+            <h2>₹{{ "%.2f"|format(loan.principal_paise / 100) }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Outstanding Balance</span>
+            <h2>₹{{ "%.2f"|format(loan.outstanding_paise / 100) }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Monthly EMI</span>
+            <h2>₹{{ "%.2f"|format(loan.emi_paise / 100) }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Total EMI Recorded</span>
+            <h2>₹{{ "%.2f"|format(total_paid / 100) }}</h2>
+        </div>
+
+    </div>
+
+    <div class="transfer-card">
+
+        <h3>Loan Information</h3>
+
+        <div class="loan-information">
+
+            <div>
+                <span>Loan Type</span>
+                <strong>{{ loan.loan_type }}</strong>
+            </div>
+
+            <div>
+                <span>Interest Rate</span>
+                <strong>{{ "%.2f"|format(loan.interest_rate) }}%</strong>
+            </div>
+
+            <div>
+                <span>Loan Tenure</span>
+                <strong>{{ loan.tenure_months }} Months</strong>
+            </div>
+
+            <div>
+                <span>Next EMI Date</span>
+                <strong>
+                    {% if loan.next_emi_date %}
+                        {{ loan.next_emi_date.strftime("%d %b %Y") }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div>
+                <span>Loan Status</span>
+                <strong>{{ loan.status }}</strong>
+            </div>
+
+            <div>
+                <span>Loan Created</span>
+                <strong>{{ loan.created_at.strftime("%d %b %Y") }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="transfer-card">
+
+        <h3>EMI Repayment History</h3>
+
+        {% if payments %}
+
+        <div class="table-responsive">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Reference Number</th>
+                        <th>Payment Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for payment in payments %}
+
+                    <tr>
+                        <td>{{ payment.reference_number }}</td>
+
+                        <td>
+                            {{ payment.payment_date.strftime("%d %b %Y") }}
+                        </td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(payment.amount_paise / 100) }}
+                        </td>
+
+                        <td>{{ payment.status }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+            <h3>No Repayment Records</h3>
+            <p>No demo EMI repayment records are available for this loan.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="investment-notice">
+        This page displays simulated loan information only.
+        No real EMI payments or financial transactions are processed.
+    </div>
+
+</div>
+
+{% endblock %}
+

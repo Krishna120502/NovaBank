@@ -1,0 +1,213 @@
+
+{% extends "base.html" %}
+
+{% block title %}Beneficiaries | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">N</div>
+            <span>NOVA<span class="brand-highlight">BANK</span></span>
+        </div>
+
+        <div class="sidebar-label">MAIN MENU</div>
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('dashboard.home') }}" class="nav-item">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('transfers.money_transfer') }}" class="nav-item">
+                <span>⇄</span> Transfers
+            </a>
+
+            <a href="{{ url_for('beneficiaries.manage') }}" class="nav-item active">
+                <span>♙</span> Beneficiaries
+            </a>
+
+            <a href="{{ url_for('transactions.history') }}" class="nav-item">
+                <span>↔</span> Transactions
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>▣</span> My Cards
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>◈</span> Investments
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⚙</span> Settings
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>?</span> Help & Support
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="demo-label">DEMO BANKING PROJECT</div>
+
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-link">
+                <span>↪</span> Sign Out
+            </a>
+        </div>
+
+    </aside>
+
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-header">
+            <div>
+                <div class="small-label">PAYMENTS & TRANSFERS</div>
+                <h2>My Beneficiaries</h2>
+                <p>Manage your saved NOVABANK demo beneficiaries.</p>
+            </div>
+        </header>
+
+
+        <!-- ADD BENEFICIARY -->
+
+        <div class="beneficiary-container">
+
+            <div class="beneficiary-form-card">
+
+                <div class="beneficiary-heading">
+                    <h3>Add New Beneficiary</h3>
+                    <p>Enter the details of another NOVABANK demo account.</p>
+                </div>
+
+                <form method="POST" action="{{ url_for('beneficiaries.manage') }}">
+
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="{{ csrf_token() }}"
+                    >
+
+                    <div class="form-group">
+                        <label>Beneficiary Name</label>
+
+                        <input
+                            type="text"
+                            name="beneficiary_name"
+                            placeholder="Enter beneficiary name"
+                            maxlength="100"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Account Number</label>
+
+                        <input
+                            type="text"
+                            name="account_number"
+                            placeholder="Enter 12-digit account number"
+                            maxlength="12"
+                            pattern="[0-9]{12}"
+                            inputmode="numeric"
+                            required
+                        >
+                    </div>
+
+                    <div class="beneficiary-notice">
+                        This feature accepts only active NOVABANK demo accounts.
+                        No real banking details should be entered.
+                    </div>
+
+                    <button type="submit" class="primary-button">
+                        + Add Beneficiary
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- SAVED BENEFICIARIES -->
+
+            <div class="saved-beneficiaries">
+
+                <div class="section-heading">
+                    <h3>Saved Beneficiaries</h3>
+                    <p>Your registered beneficiaries</p>
+                </div>
+
+                {% if beneficiaries %}
+
+                    {% for beneficiary in beneficiaries %}
+
+                    <div class="beneficiary-item">
+
+                        <div class="beneficiary-avatar">
+                            {{ beneficiary.beneficiary_name[0]|upper }}
+                        </div>
+
+                        <div class="beneficiary-details">
+                            <h4>{{ beneficiary.beneficiary_name }}</h4>
+
+                            <p>
+                                Account:
+                                ****{{ beneficiary.account_number[-4:] }}
+                            </p>
+
+                            <small>
+                                Added {{ beneficiary.created_at.strftime('%d %b %Y') }}
+                            </small>
+                        </div>
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('beneficiaries.delete', beneficiary_id=beneficiary.id) }}"
+                            onsubmit="return confirm('Delete this beneficiary?');"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="csrf_token"
+                                value="{{ csrf_token() }}"
+                            >
+
+                            <button type="submit" class="delete-beneficiary">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="beneficiary-empty">
+                        <div>♙</div>
+                        <h4>No beneficiaries added yet</h4>
+                        <p>Add your first NOVABANK demo beneficiary above.</p>
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+
+        <footer class="dashboard-footer">
+            © 2026 NOVABANK. SIMULATED BANKING DEMONSTRATION.
+        </footer>
+
+    </main>
+
+</div>
+
+{% endblock %}

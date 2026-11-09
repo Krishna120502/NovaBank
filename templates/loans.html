@@ -1,0 +1,127 @@
+
+{% extends "base.html" %}
+
+{% block title %}Existing Loans | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h2>Existing Loans</h2>
+        <p>View your loan details, outstanding balances and EMI information.</p>
+    </div>
+
+    <div class="transaction-summary">
+
+        <div class="summary-card">
+            <span>Total Loan Amount</span>
+            <h2>₹{{ "%.2f"|format(total_principal / 100) }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Outstanding Balance</span>
+            <h2>₹{{ "%.2f"|format(total_outstanding / 100) }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Monthly EMI</span>
+            <h2>₹{{ "%.2f"|format(total_emi / 100) }}</h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Active Loans</span>
+            <h2>{{ active_loans }}</h2>
+        </div>
+
+    </div>
+
+    <div class="transfer-card">
+
+        <h3>Loan Details</h3>
+
+        {% if loans %}
+
+        <div class="table-responsive">
+
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Loan Type</th>
+                        <th>Loan Amount</th>
+                        <th>Outstanding</th>
+                        <th>Monthly EMI</th>
+                        <th>Interest Rate</th>
+                        <th>Tenure</th>
+                        <th>Next EMI</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for loan in loans %}
+
+                    
+                        <td>
+    <a href="{{ url_for('loans.details', loan_id=loan.id) }}" class="loan-details-link">
+        {{ loan.loan_name }}
+    </a>
+</td>
+
+                        
+                            ₹{{ "%.2f"|format(loan.principal_paise / 100) }}
+                        </td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(loan.outstanding_paise / 100) }}
+                        </td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(loan.emi_paise / 100) }}
+                        </td>
+
+                        <td>{{ "%.2f"|format(loan.interest_rate) }}%</td>
+
+                        <td>{{ loan.tenure_months }} Months</td>
+
+                        <td>
+                            {% if loan.next_emi_date %}
+                                {{ loan.next_emi_date.strftime("%d %b %Y") }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+
+                        <td>{{ loan.status }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+            <h3>No Existing Loans</h3>
+            <p>You currently have no demo loan records.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+    <div class="investment-notice">
+        This is a simulated banking dashboard. Loan amounts, interest rates
+        and EMI details are illustrative only. No real loans or payments
+        are involved.
+    </div>
+
+</div>
+
+{% endblock %}

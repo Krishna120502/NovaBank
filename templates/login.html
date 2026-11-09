@@ -1,0 +1,119 @@
+
+{% extends "base.html" %}
+
+{% block title %}Login | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="auth-page">
+
+    <div class="auth-left">
+
+        <div class="brand">
+            <div class="brand-icon">N</div>
+            <span>NOVA<span class="brand-highlight">BANK</span></span>
+        </div>
+
+        <div class="welcome-content">
+            <span class="welcome-tag">YOUR MONEY. YOUR CONTROL.</span>
+
+            <h1>Banking that moves<br>with your life.</h1>
+
+            <p>
+                Experience smarter, simpler and more convenient
+                digital banking with NOVABANK.
+            </p>
+
+            <div class="feature-list">
+                <div>✓ Secure digital banking experience</div>
+                <div>✓ Simple account management</div>
+                <div>✓ Complete financial visibility</div>
+            </div>
+        </div>
+
+        <div class="left-footer">
+            © 2026 NOVABANK. DEMO BANKING PROJECT.
+        </div>
+
+    </div>
+
+
+    <div class="auth-right">
+
+        <div class="login-card">
+
+            <div class="mobile-brand">
+                <div class="brand-icon">N</div>
+                <span>NOVA<span class="brand-highlight">BANK</span></span>
+            </div>
+
+            <div class="form-heading">
+                <span class="small-label">WELCOME BACK</span>
+                <h2>Sign in to your account</h2>
+                <p>Enter your details to continue to NOVABANK.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('auth.login') }}">
+
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="form-group">
+                    <label>Mobile Number</label>
+
+                    <input
+                        type="tel"
+                        name="mobile"
+                        placeholder="Enter 10-digit mobile number"
+                        maxlength="10"
+                        pattern="[6-9][0-9]{9}"
+                        inputmode="numeric"
+                        autocomplete="tel"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>4-Digit MPIN</label>
+
+                    <input
+                        type="password"
+                        name="pin"
+                        placeholder="Enter your MPIN"
+                        maxlength="4"
+                        pattern="[0-9]{4}"
+                        inputmode="numeric"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <div class="forgot-row">
+                    <a href="#" onclick="alert('MPIN recovery will be added later.'); return false;">
+                        Forgot MPIN?
+                    </a>
+                </div>
+
+                <button type="submit" class="primary-button">
+                    Sign In <span>→</span>
+                </button>
+
+            </form>
+
+            <div class="register-link">
+                Don't have an account?
+                <a href="{{ url_for('auth.register') }}">Create account</a>
+            </div>
+
+            <div class="security-note">
+                <span>🔒</span>
+                This is a simulated banking demonstration.
+                Do not enter real banking credentials.
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
