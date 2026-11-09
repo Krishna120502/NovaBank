@@ -1,0 +1,130 @@
+
+{% extends "base.html" %}
+
+{% block title %}Investments | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h2>My Investments</h2>
+        <p>Explore and manage your simulated investment portfolio.</p>
+    </div>
+
+    <div class="transaction-summary">
+
+        <div class="summary-card">
+            <span>Total Demo Investments</span>
+            <h2>
+                ₹{{ "%.2f"|format(total_invested_paise / 100) }}
+            </h2>
+        </div>
+
+        <div class="summary-card">
+            <span>Active Investments</span>
+            <h2>{{ investments|length }}</h2>
+        </div>
+
+    </div>
+
+    <div class="transfer-card">
+
+        <h3>Create a Demo Investment</h3>
+        <p>Choose an investment type and enter a demo amount.</p>
+
+        <form method="POST" action="{{ url_for('investments.overview') }}">
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="form-group">
+                <label>Investment Type</label>
+
+                <select name="investment_type" required>
+                    <option value="">Select investment type</option>
+                    <option value="FIXED DEPOSIT">Fixed Deposit - Illustrative 7% rate</option>
+                    <option value="MUTUAL FUND">Mutual Fund - Illustrative 10% rate</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Investment Amount (₹)</label>
+
+                <input
+                    type="number"
+                    name="amount"
+                    min="1000"
+                    max="1000000"
+                    step="0.01"
+                    placeholder="Enter amount"
+                    required
+                >
+            </div>
+
+            <div class="investment-notice">
+                This is a simulated investment feature.
+                No real money is invested. Rates are illustrative,
+                not guaranteed returns or financial advice.
+            </div>
+
+            <button type="submit" class="primary-button">
+                Create Demo Investment
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="transfer-card">
+
+        <h3>Investment History</h3>
+
+        {% if investments %}
+
+        <div class="table-responsive">
+            <table class="data-table">
+
+                <thead>
+                    <tr>
+                        <th>Investment</th>
+                        <th>Amount</th>
+                        <th>Illustrative Rate</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in investments %}
+                    <tr>
+                        <td>{{ item.investment_name }}</td>
+
+                        <td>
+                            ₹{{ "%.2f"|format(item.invested_amount_paise / 100) }}
+                        </td>
+
+                        <td>{{ "%.1f"|format(item.expected_return_rate) }}%</td>
+
+                        <td>{{ item.investment_date.strftime("%d %b %Y") }}</td>
+
+                        <td>{{ item.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+
+        <p class="empty-state">
+            No demo investments found. Create your first demo investment above.
+        </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

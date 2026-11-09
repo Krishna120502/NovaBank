@@ -1,0 +1,242 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">N</div>
+            <span>NOVA<span class="brand-highlight">BANK</span></span>
+        </div>
+
+        <div class="sidebar-label">MAIN MENU</div>
+
+        <nav class="sidebar-nav">
+
+            <a href="{{ url_for('dashboard.home') }}" class="nav-item active">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="{{ url_for('transfers.money_transfer') }}" class="nav-item">
+                <span>⇄</span> Transfers
+            </a>
+
+            <a href="{{ url_for('transactions.history') }}" class="nav-item">
+                <span>↔</span> Transactions
+            </a>
+
+            <a href="{{ url_for('beneficiaries.manage') }}" class="nav-item">
+                <span>♙</span> Beneficiaries
+            </a>
+
+            <a href="{{ url_for('cards.my_cards') }}" class="nav-item">
+                <span>▣</span> My Cards
+            </a>
+
+            <a href="{{ url_for('investments.overview') }}" class="nav-item">
+                <span>▤</span> Investments
+            </a>
+            <a href="{{ url_for('loans.overview') }}" class="nav-item">
+                <span>▤</span> Existing Loans
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⚙</span> Settings
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>?</span> Help & Support
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="demo-label">DEMO BANKING PROJECT</div>
+
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-link">
+                <span>↪</span> Sign Out
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="dashboard-main">
+
+        <header class="dashboard-header">
+
+            <div>
+                <div class="small-label">CUSTOMER DASHBOARD</div>
+                <h2>Welcome back, {{ current_user.full_name }}!</h2>
+                <p>Here's an overview of your NOVABANK account.</p>
+            </div>
+
+            <div class="profile-circle">
+                {{ current_user.full_name[0]|upper }}
+            </div>
+
+        </header>
+
+
+        <!-- BALANCE SECTION -->
+        <section class="balance-section">
+
+            <div class="balance-card">
+
+                <div class="balance-top">
+                    <span>Total Account Balance</span>
+                    <span class="balance-status">● ACTIVE</span>
+                </div>
+
+                <h1>
+                    ₹{{ "%.2f"|format(total_balance_paise / 100) }}
+                </h1>
+
+                <p>Available balance across your accounts</p>
+
+                <div class="balance-footer">
+                    <span>NOVABANK CUSTOMER</span>
+                    <span>**** **** **** {{ current_user.mobile[-4:] }}</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- QUICK ACTIONS -->
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <h3>Quick Actions</h3>
+                <p>Manage your banking activities</p>
+            </div>
+
+            <div class="quick-actions">
+
+                <a href="{{ url_for('transactions.history') }}" class="quick-action">
+                    <div class="action-icon">↔</div>
+                    <span>Transactions</span>
+                    <small>View account activity</small>
+                </a>
+
+                <a href="{{ url_for('transfers.money_transfer') }}" class="quick-action">
+                    <div class="action-icon">⇄</div>
+                    <span>Transfer Money</span>
+                    <small>Transfer between demo accounts</small>
+                </a>
+
+                <a href="{{ url_for('cards.my_cards') }}" class="quick-action">
+                    <div class="action-icon">▣</div>
+                    <span>My Cards</span>
+                    <small>View and manage demo card</small>
+                </a>
+
+                <a href="#" class="quick-action">
+                    <div class="action-icon">◈</div>
+                    <span>Investments</span>
+                    <small>Coming soon</small>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- ACCOUNTS -->
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <h3>My Accounts</h3>
+                <p>Your registered NOVABANK accounts</p>
+            </div>
+
+            <div class="account-grid">
+
+                {% for account in accounts %}
+
+                <div class="account-card">
+
+                    <div class="account-card-top">
+                        <span class="account-icon">N</span>
+                        <span class="account-status">{{ account.status }}</span>
+                    </div>
+
+                    <h4>{{ account.account_type }} Account</h4>
+
+                    <p>
+                        Account Number:
+                        ****{{ account.account_number[-4:] }}
+                    </p>
+
+                    <h2>
+                        ₹{{ "%.2f"|format(account.balance_paise / 100) }}
+                    </h2>
+
+                </div>
+
+                {% else %}
+
+                <div class="account-card">
+                    <p>No accounts found.</p>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- RECENT TRANSACTIONS -->
+        <section class="dashboard-section">
+
+            <div class="section-heading section-heading-row">
+
+                <div>
+                    <h3>Recent Transactions</h3>
+                    <p>Check your latest account activity</p>
+                </div>
+
+                <a href="{{ url_for('transactions.history') }}" class="view-all-link">
+                    View All →
+                </a>
+
+            </div>
+
+            <div class="recent-transaction-card">
+
+                <div class="recent-transaction-icon">↔</div>
+
+                <div>
+                    <h4>Transaction History</h4>
+                    <p>View all your credits and debits.</p>
+                </div>
+
+                <a href="{{ url_for('transactions.history') }}">
+                    Open →
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <footer class="dashboard-footer">
+            © 2026 NOVABANK. SIMULATED BANKING DEMONSTRATION.
+        </footer>
+
+    </main>
+
+</div>
+
+{% endblock %}

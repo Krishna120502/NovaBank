@@ -1,0 +1,215 @@
+
+{% extends "base.html" %}
+
+{% block title %}Transactions | NOVABANK{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-layout">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">N</div>
+            <span>NOVA<span class="brand-highlight">BANK</span></span>
+        </div>
+
+        <div class="sidebar-label">MAIN MENU</div>
+
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('dashboard.home') }}" class="nav-item">
+                <span>▦</span> Dashboard
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⇄</span> Transfers
+            </a>
+
+            <a href="{{ url_for('transactions.history') }}" class="nav-item active">
+                <span>↔</span> Transactions
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>▣</span> My Cards
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>◈</span> Investments
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>⚙</span> Settings
+            </a>
+
+            <a href="#" class="nav-item">
+                <span>?</span> Help & Support
+            </a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="demo-label">DEMO BANKING PROJECT</div>
+            <a href="{{ url_for('auth.logout') }}" class="nav-item logout-link">
+                <span>↪</span> Sign Out
+            </a>
+        </div>
+
+    </aside>
+
+
+    <main class="dashboard-main">
+
+        <header class="dashboard-header">
+            <div>
+                <div class="small-label">ACCOUNT ACTIVITY</div>
+                <h2>Transaction History</h2>
+                <p>Track and manage your account transactions.</p>
+            </div>
+        </header>
+
+
+        <!-- SUMMARY CARDS -->
+
+        <section class="transaction-summary">
+
+            <div class="summary-card">
+                <span>Total Credits</span>
+                <h2 class="credit-text">
+                    ₹{{ "%.2f"|format(total_credits / 100) }}
+                </h2>
+                <small>Successful incoming transactions</small>
+            </div>
+
+            <div class="summary-card">
+                <span>Total Debits</span>
+                <h2 class="debit-text">
+                    ₹{{ "%.2f"|format(total_debits / 100) }}
+                </h2>
+                <small>Successful outgoing transactions</small>
+            </div>
+
+            <div class="summary-card">
+                <span>Total Transactions</span>
+                <h2>{{ total_transactions }}</h2>
+                <small>All recorded transactions</small>
+            </div>
+
+        </section>
+
+
+        <!-- TRANSACTION TABLE -->
+
+        <section class="dashboard-section">
+
+            <div class="section-heading">
+                <h3>All Transactions</h3>
+                <p>View your complete transaction history.</p>
+            </div>
+
+            <div class="transaction-toolbar">
+
+                <input
+                    type="text"
+                    id="transactionSearch"
+                    placeholder="Search description or reference number..."
+                >
+
+                <select id="transactionFilter">
+                    <option value="ALL">All Transactions</option>
+                    <option value="CREDIT">Credit</option>
+                    <option value="DEBIT">Debit</option>
+                </select>
+
+            </div>
+
+
+            <div class="transaction-table-wrapper">
+
+                <table class="transaction-table">
+
+                    <thead>
+                        <tr>
+                            <th>Reference Number</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="transactionTableBody">
+
+                        {% for transaction in transactions %}
+
+                        <tr
+                            class="transaction-row"
+                            data-type="{{ transaction.transaction_type|upper }}"
+                        >
+
+                            <td>
+                                {{ transaction.reference_number }}
+                            </td>
+
+                            <td>
+                                {{ transaction.description }}
+                            </td>
+
+                            <td>
+                                <span class="transaction-type {{ transaction.transaction_type|lower }}">
+                                    {{ transaction.transaction_type }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ transaction.transaction_date.strftime('%d %b %Y, %I:%M %p') }}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    {% if transaction.transaction_type|upper == "CREDIT" %}
+                                        +
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                    ₹{{ "%.2f"|format(transaction.amount_paise / 100) }}
+                                </strong>
+                            </td>
+
+                            <td>
+                                <span class="status-badge {{ transaction.status|lower }}">
+                                    {{ transaction.status }}
+                                </span>
+                            </td>
+
+                        </tr>
+
+                        {% else %}
+
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                No transactions found.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <footer class="dashboard-footer">
+            © 2026 NOVABANK. SIMULATED BANKING DEMONSTRATION.
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/transactions.js') }}"></script>
+
+{% endblock %}
